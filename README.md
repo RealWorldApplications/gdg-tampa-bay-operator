@@ -67,3 +67,25 @@ npx tsc --noEmit
 1. **Turn 1 (Read operation):** The user asks about returning order `#8841`. Gemini invokes `checkReturnEligibility` (`{ orderId: '8841' }`), verifies the 30-day window and final-sale status against `mockData.json`, and asks the user to confirm before creating a label.
 2. **Turn 2 (Confirmed write operation):** After the user explicitly confirms, Gemini invokes `generateReturnLabel`, which re-validates eligibility on the backend and returns a simulated UPS Ground tracking number and label URL.
 3. **Turn 3 (Policy enforcement):** The user asks about returning order `8842`. Gemini calls `checkReturnEligibility`, receives `eligible: false` (58 days since delivery), and explains that the 30-day return window has expired.
+
+## API Keys & Authentication (Dev vs. Prod)
+
+### Local Development (`GEMINI_API_KEY`)
+
+- **Automatic env lookup:** Initializing `new GoogleGenAI({})` in [index.ts](index.ts) automatically reads `process.env.GEMINI_API_KEY`—so you never need to hardcode keys in source files.
+- **Shell export or `.env` file:** Export `GEMINI_API_KEY` in your terminal (`export GEMINI_API_KEY="..."`), or store it in a local `.env` file and run `npx tsx --env-file=.env index.ts`.
+- **Keep keys out of Git:** `.env` and `.env.*` are excluded in `.gitignore`.
+
+### Production (Cloud Run / Vertex AI)
+
+- **Server-side only:** Never expose `GEMINI_API_KEY` in browser/frontend bundles; keep all `@google/genai` calls and tool handlers inside your backend service.
+- **Secret Manager (Gemini Developer API):** Store `GEMINI_API_KEY` in Google Cloud Secret Manager and mount it into Cloud Run as a secret environment variable with least-privilege IAM access (`roles/secretmanager.secretAccessor`).
+- **Keyless ADC with Vertex AI (Recommended for GCP):** Eliminate static API keys entirely by pointing the same `@google/genai` SDK at Vertex AI using Application Default Credentials (ADC) via your Cloud Run service account (`roles/aiplatform.user`):
+
+  ```ts
+  const ai = new GoogleGenAI({
+    vertexai: true,
+    project: process.env.GOOGLE_CLOUD_PROJECT,
+    location: 'us-central1',
+  });
+  ```
