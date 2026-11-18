@@ -1,0 +1,34 @@
+{
+  "orders": [
+    {
+      "orderId": "8841",
+      "customerName": "Alex Rivera",
+      "item": "Trail Running Shoes (Size 10)",
+      "purchaseDate": "2026-11-09",
+      "daysSinceDelivery": 3,
+      "price": 129.99,
+      "status": "DELIVERED",
+      "isFinalSale": false
+    },
+    {
+      "orderId": "8842",
+      "customerName": "Jordan Lee",
+      "item": "Mechanical Keyboard",
+      "purchaseDate": "2026-09-15",
+      "daysSinceDelivery": 58,
+      "price": 149.00,
+      "status": "DELIVERED",
+      "isFinalSale": false
+    },
+    {
+      "orderId": "8843",
+      "customerName": "Taylor Morgan",
+      "item": "Clearance Winter Jacket",
+      "purchaseDate": "2026-11-10",
+      "daysSinceDelivery": 2,
+      "price": 65.00,
+      "status": "DELIVERED",
+      "isFinalSale": true
+    }
+  ]
+}
